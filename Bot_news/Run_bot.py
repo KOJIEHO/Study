@@ -24,8 +24,8 @@ bot = telebot.TeleBot(token)
     
 async def check_news_update():
     while True:
-        #try:
-            #main_GazetaRu()
+        try:
+            main_GazetaRu()
             main_InterfaxRu()
             main_IzRu()
             main_LentaRu()
@@ -46,8 +46,8 @@ async def check_news_update():
             print('##################################################################################################')
             print('__________________________________________________________________')
             await asyncio.sleep(60)
-        #except Exception:
-            #continue
+        except Exception:
+            continue
 
 
 if __name__ == '__main__':
