@@ -2,7 +2,7 @@ import asyncio
 import telebot
 from user_id import token
 from AgricultureCom import main_AgricultureCom
-from GazetaRu import main_GazetaRu
+# from GazetaRu import main_GazetaRu
 from InterfaxRu import main_InterfaxRu
 from IzRu import main_IzRu
 from LentaRu import main_LentaRu
@@ -25,7 +25,7 @@ bot = telebot.TeleBot(token)
 async def check_news_update():
     while True:
         try:
-            main_GazetaRu()
+            # main_GazetaRu() Бот не запускается на сервере с ним
             main_InterfaxRu()
             main_IzRu()
             main_LentaRu()
