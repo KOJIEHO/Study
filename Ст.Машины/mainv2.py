@@ -8,18 +8,6 @@ import sqlite3
 from datetime import datetime
 bot = telebot.TeleBot('5238517183:AAHkdru03SWwWiPpvzSNFGLXRyXhWKl2wnw')
 
-otchet_time = str(datetime.now().hour) + '-' + str(datetime.now().minute) + ' ; ' + str(datetime.now().date())
-
-@bot.message_handler(commands=['start'])
-def start(message):
-    markup_main = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("Регистрация")
-    btn2 = types.KeyboardButton("Авторизация")
-    markup_main.add(btn1, btn2)
-
-    bot.delete_message(message.chat.id, message.message_id)
-    bot.send_message(message.chat.id, text='👋Добрый день, пройдите авторизацию', reply_markup=markup_main)
-
 
 def make_sure_path_exists(path):
     try: os.makedirs(path)
@@ -36,6 +24,17 @@ def convert_to_not_binary_data(data, filename):
     file = open(filename, 'wb')
     photo_name = file.write(data)
     return photo_name
+
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup_main = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton("Регистрация")
+    btn2 = types.KeyboardButton("Авторизация")
+    markup_main.add(btn1, btn2)
+
+    bot.delete_message(message.chat.id, message.message_id)
+    bot.send_message(message.chat.id, text='👋Добрый день, пройдите авторизацию', reply_markup=markup_main)
 
 
 @bot.message_handler(content_types=['text'])
@@ -79,7 +78,6 @@ def func(message):
                 bot.send_photo(message.chat.id, photo)
                 photo = open('Primer' + str(count) + '.1.jpg', 'rb')
                 bot.send_photo(message.chat.id, photo)
-
             else:
                 photo = open('Primer' + str(count) + '.jpg', 'rb')
                 bot.send_photo(message.chat.id, photo)
@@ -150,7 +148,6 @@ def func(message):
             bot.delete_message(message.chat.id, message.message_id - 1)
             bot.delete_message(message.chat.id, message.message_id)
             bot.send_message(message.chat.id, text='Пришлите ваше полное ФИО по примеру:\n\nФИО\n*Фамилия Имя Отчечство*')
-
 
     elif message_arr[0] == 'ФИО':
         id = str(message.chat.id)
@@ -230,11 +227,8 @@ def func(message):
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, text='График работы записан!', reply_markup=markup_return)
-
     else:
-            bot.delete_message(message.chat.id, message.message_id - 1)
             bot.delete_message(message.chat.id, message.message_id)
-            bot.send_message(message.chat.id, text="Я вас не понимаю. Попробуйте другую команду.", reply_markup=markup_return)
 
 
 @bot.message_handler(content_types=["photo"])
@@ -256,7 +250,6 @@ def handle_docs_photo(message):
     photo = convert_to_binary_data(name)
     text = open('file.txt', 'r')
     text = text.read()
-
 
     base = sqlite3.connect('Registracia.db')
     cur = base.cursor()
