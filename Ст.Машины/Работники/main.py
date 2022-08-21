@@ -189,8 +189,7 @@ try:
             if true == 1:
                 bot.send_message(message.chat.id, text='Узнаю вас', reply_markup=markup_main)
             else:
-                bot.send_message(message.chat.id, text='Первый раз вас вижу. Пройдите регистрацию',
-                                 reply_markup=markup_reg)
+                bot.send_message(message.chat.id, text='Первый раз вас вижу. Пройдите регистрацию', reply_markup=markup_reg)
 
         elif message_arr[0] == "График":
             count = 2
@@ -239,8 +238,7 @@ try:
             if id == admin_id_home or id == admin_id_work or id == admin_id_prog_1 or id == admin_id_prog_2:
                 bot.delete_message(message.chat.id, message.message_id - 1)
                 bot.delete_message(message.chat.id, message.message_id)
-                bot.send_message(message.chat.id, text='Вариант информации для выгрузки:',
-                                 reply_markup=markup_for_admin)
+                bot.send_message(message.chat.id, text='Вариант информации для выгрузки:', reply_markup=markup_for_admin)
             else:
                 bot.delete_message(message.chat.id, message.message_id - 1)
                 bot.delete_message(message.chat.id, message.message_id)
@@ -249,14 +247,12 @@ try:
         elif message.text == 'Выгрузить отчет':
             bot.delete_message(message.chat.id, message.message_id - 1)
             bot.delete_message(message.chat.id, message.message_id)
-            bot.send_message(message.chat.id,
-                             text='Для выгрузки отчета пришлите сообщение по примеру:\n\nОтчет\nИванов Иван Иваныч\nГГГГ-ММ-ЧЧ')
+            bot.send_message(message.chat.id, text='Для выгрузки отчета пришлите сообщение по примеру:\n\nОтчет\nИванов Иван Иваныч\nГГГГ-ММ-ЧЧ\n\n\nДля выгрузки отчетов за все время напишите:\n\nВсе отчеты\nИванов Иван Иваныч')
 
         elif message.text == 'Выгрузить график':
             bot.delete_message(message.chat.id, message.message_id - 1)
             bot.delete_message(message.chat.id, message.message_id)
-            bot.send_message(message.chat.id,
-                             text='Для выгрузки графика работы пришлите сообщение по примеру:\n\nРабочий график\nИванов Иван Иваныч')
+            bot.send_message(message.chat.id, text='Для выгрузки графика работы пришлите сообщение по примеру:\n\nРабочий график\nИванов Иван Иваныч')
 
         elif message_arr[0] == 'Отчет' or message_arr[0] == 'Отчёт':
             bot.delete_message(message.chat.id, message.message_id - 1)
@@ -281,16 +277,39 @@ try:
                 info_about_counter.write(str(counter))
                 info_about_counter.close()
                 count = 0
-                photo_name = 'Фото ' + str(count + 1) + ' от ' + str(datetime[count][0][:-6]) + '.jpg'
-                new_path = r"/root/ServisnCentr_bot" + photo_name
                 schetchik = counter - 1
                 while count < counter:
                     mes_text = str(text[max_count - schetchik][0])
                     bot.send_message(message.chat.id, text=mes_text, reply_markup=markup_return_2)
+                    photo_name = 'Фото ' + str(count + 1) + ' от ' + str(datetime[count][0][:-6]) + '.jpg'
+                    new_path = r"/root/ServisnCentr_bot" + photo_name
                     img = convert_to_not_binary_data(photo[max_count - schetchik][0], new_path)
                     bot.send_photo(message.chat.id, img)
                     count += 1
                     schetchik -= 1
+        
+        elif message_arr[0] == 'Все':
+            bot.delete_message(message.chat.id, message.message_id - 1)
+            bot.delete_message(message.chat.id, message.message_id)
+            table_name = message_arr[2] + message_arr[3] + message_arr[4]
+            base = sqlite3.connect('OtchetInfo.db')
+            cur = base.cursor()
+            datetime = cur.execute('SELECT datetime FROM ' + table_name).fetchall()
+            photo = cur.execute('SELECT photo FROM ' + table_name).fetchall()
+            text = cur.execute('SELECT text FROM ' + table_name).fetchall()
+            count_otchetov = len(datetime)
+            info_about_counter = open('info_about_counter.txt', 'w')
+            info_about_counter.write(str(count_otchetov))
+            info_about_counter.close()
+            count = 0
+            while count < count_otchetov:
+                mes_text = str(text[count][0])
+                bot.send_message(message.chat.id, text=mes_text, reply_markup=markup_return_2)
+                photo_name = 'Фото ' + str(count + 1) + ' от ' + str(datetime[count][0][:-6]) + '.jpg'
+                new_path = r"C:\Users\KOJIEHO\Desktop\Папка\PythonProject\Project_Telegramm_Bot\\" + photo_name
+                img = convert_to_not_binary_data(photo[count][0], new_path)
+                bot.send_photo(message.chat.id, img)
+                count += 1
 
         elif message_arr[0] == 'Рабочий':
             bot.delete_message(message.chat.id, message.message_id - 1)
