@@ -163,6 +163,10 @@ try:
             base.commit()
             cur.execute('INSERT INTO UserInfo VALUES(?, ?)', (id, text))
             base.commit()
+            base = sqlite3.connect('OtchetInfo.db')
+            table_name = message_arr[1] + message_arr[2] + message_arr[3]
+            base.execute('CREATE TABLE IF NOT EXISTS ' + table_name + '(datetime TEXT, photo BLOB, text TEXT)')
+            base.commit()
             bot.delete_message(message.chat.id, message.message_id - 1)
             bot.delete_message(message.chat.id, message.message_id)
             bot.send_message(message.chat.id, text='Регистрация пройдена!', reply_markup=markup_return)
@@ -297,19 +301,22 @@ try:
             datetime = cur.execute('SELECT datetime FROM ' + table_name).fetchall()
             photo = cur.execute('SELECT photo FROM ' + table_name).fetchall()
             text = cur.execute('SELECT text FROM ' + table_name).fetchall()
-            count_otchetov = len(datetime)
-            info_about_counter = open('info_about_counter.txt', 'w')
-            info_about_counter.write(str(count_otchetov))
-            info_about_counter.close()
-            count = 0
-            while count < count_otchetov:
-                mes_text = str(text[count][0])
-                bot.send_message(message.chat.id, text=mes_text, reply_markup=markup_return_2)
-                photo_name = 'Фото ' + str(count + 1) + ' от ' + str(datetime[count][0][:-6]) + '.jpg'
-                new_path = r"C:\Users\KOJIEHO\Desktop\Папка\PythonProject\Project_Telegramm_Bot\\" + photo_name
-                img = convert_to_not_binary_data(photo[count][0], new_path)
-                bot.send_photo(message.chat.id, img)
-                count += 1
+            if len(datetime) == 0:
+                bot.send_message(message.chat.id, text='Этот пользователь еще не выгрузил отчеты', reply_markup=markup_return)
+            else:
+                count_otchetov = len(datetime)
+                info_about_counter = open('info_about_counter.txt', 'w')
+                info_about_counter.write(str(count_otchetov))
+                info_about_counter.close()
+                count = 0
+                while count < count_otchetov:
+                    mes_text = str(text[count][0])
+                    bot.send_message(message.chat.id, text=mes_text, reply_markup=markup_return_2)
+                    photo_name = 'Фото ' + str(count + 1) + ' от ' + str(datetime[count][0][:-6]) + '.jpg'
+                    new_path = r"C:\Users\KOJIEHO\Desktop\Папка\PythonProject\Project_Telegramm_Bot\\" + photo_name
+                    img = convert_to_not_binary_data(photo[count][0], new_path)
+                    bot.send_photo(message.chat.id, img)
+                    count += 1
 
         elif message_arr[0] == 'Рабочий':
             bot.delete_message(message.chat.id, message.message_id - 1)
