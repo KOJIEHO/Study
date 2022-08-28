@@ -69,7 +69,7 @@ async def new_info_send(message: types.Message):
                     count += 1
                 else:
                     print('Вышла новая тачка\n')
-                    if int(max_size_db) > 19:
+                    if int(max_size_db) > 49:
                         id = 0
                         while id < len(id_for_message):
                             await bot.send_message(id_for_message[id][0], 'Новая партия информации по машинам на странице ' + str(count))
