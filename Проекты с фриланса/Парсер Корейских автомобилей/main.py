@@ -10,8 +10,6 @@ headers = {
     "accept": "*/*"}
 url = ['http://api.encar.com/search/car/list/premium?count=true&q=(And.Year.range(201800..202299)._.Mileage.range(10000..70000)._.Hidden.N._.CarType.Y._.Trust.Warranty._.Condition.Inspection._.(Or.FuelType.%EB%94%94%EC%A0%A4._.FuelType.%EA%B0%80%EC%86%94%EB%A6%B0.)_.Transmission.%EC%98%A4%ED%86%A0.)&sr=%7CModifiedDate%7C0%7C50', 'http://api.encar.com/search/car/list/premium?count=true&q=(And.Year.range(201800..202299)._.Mileage.range(10000..70000)._.Hidden.N._.CarType.N._.Trust.Warranty._.Condition.Inspection._.(Or.FuelType.%EB%94%94%EC%A0%A4._.FuelType.%EA%B0%80%EC%86%94%EB%A6%B0.)_.Transmission.%EC%98%A4%ED%86%A0.)&sr=%7CModifiedDate%7C0%7C50']
 bot = Bot('5644402304:AAHdwG-BJE9ImPiO4RI4nGdxe0jGvU5C7vA')
-# Токен заказчика - 5644402304:AAHdwG-BJE9ImPiO4RI4nGdxe0jGvU5C7vA
-# Мой тестовый токен - 5238517183:AAHkdru03SWwWiPpvzSNFGLXRyXhWKl2wnw
 db = Dispatcher(bot)
 
 
@@ -45,12 +43,12 @@ async def new_info_send(message: types.Message):
                 base.commit()
                 Last_id_from_DB = cur.execute('SELECT Id FROM TABLE' + str(count)).fetchall()
                 max_size_db = len(Last_id_from_DB)
-                # print(Last_id_from_DB)
+                print(Last_id_from_DB)
                 Last_id_from_DB = Last_id_from_DB[len(Last_id_from_DB)-1][0]
                 response = requests.get(url[count - 1], timeout=30, headers=headers)
                 data = response.json()
                 Id = str(data['SearchResults'][0]['Id'])
-                # print(Id)
+                print(Id)
                 count_for_photo = 0
                 Array_photo_links = []
                 while count_for_photo < len(data['SearchResults'][0]['Photos']):
@@ -84,7 +82,7 @@ async def new_info_send(message: types.Message):
                     cur.execute('INSERT INTO TABLE' + str(count) + ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (Id, Array_photo_links, Model, Badge, FuelType, FormYear, Mileage, OfficeCityState, Price, Manufacturer))
                     base.commit()
                     count += 1
-            # print('##########################################')
+            print('##########################################')
         except Exception:
             continue
 
