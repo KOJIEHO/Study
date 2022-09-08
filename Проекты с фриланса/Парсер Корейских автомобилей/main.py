@@ -15,6 +15,7 @@ db = Dispatcher(bot)
 
 @db.message_handler(commands=['start'])
 async def new_info_send(message: types.Message):
+    print('Добавил нового пользователя')
     user_id = message.chat.id
     base = sqlite3.connect('user_id.db')
     cur = base.cursor()
