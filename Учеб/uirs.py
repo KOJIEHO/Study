@@ -5,8 +5,8 @@ from PIL import Image, ImageDraw
 # Константы
 MaxV1 = 20
 MaxV2 = 20
-x0 = 2
-y0 = 7
+x0 = 0
+y0 = 0
 alpha0 = 0
 beta0 = 0
 
@@ -19,7 +19,7 @@ while True:
         break
     count += 1
 
-# Кусок с расчетом углов поворота для каждой точки
+
 count = 0
 alpha_arr = []
 s_arr = []
@@ -45,9 +45,31 @@ while count < int(len(point_arr)):
             alpha_arr += [270]
         if y0 < y1 and x0 > x1:
             alpha_arr += [270 + math.degrees(math.atan((y1 - y0) / (x0 - x1)))]
-        alpha_arr += [point_arr[count].split()[2]]
-        beta_arr += [alpha_arr[count] - beta0]
+
+        if beta0 == alpha_arr[count]:
+            beta_arr += [alpha_arr[count]]
+        if (beta0 > alpha_arr[count]) and (alpha_arr[count] >= (beta0 - 180)):
+            beta_arr += [(beta0 - alpha_arr[count]) * (-1)]
+        if alpha_arr[count] >= (beta0 + 180):
+            beta_arr += [(beta0 + (360 - alpha_arr[count])) * (-1)]
+        if alpha_arr[count] < (beta0 - 180):
+            beta_arr += [((360 - beta0) + alpha_arr[count])]
+        if (alpha_arr[count] > beta0) and (alpha_arr[count] < (beta0 + 180)):
+            beta_arr += [alpha_arr[count] - beta0]
+
         beta0 = alpha_arr[count]
+        alpha_last = float(point_arr[count].split()[2])
+        if beta0 == alpha_last:
+            beta_last = alpha_last
+        if (beta0 > alpha_last) and (alpha_last >= (beta0 - 180)):
+            beta_last = (beta0 - alpha_last) * (-1)
+        if alpha_last >= (beta0 + 180):
+            beta_last = (beta0 + (360 - alpha_last)) * (-1)
+        if alpha_last < (beta0 - 180):
+            beta_last = ((360 - beta0) + alpha_last)
+        if (alpha_last > beta0) and (alpha_last < (beta0 + 180)):
+            beta_last = alpha_last - beta0
+
         print('____________________________________________')
         print('Пара точек № ' + str(count + 1))
         print('Координаты первой точки (' + str(x0) + ';' + str(y0) + ')')
@@ -55,7 +77,8 @@ while count < int(len(point_arr)):
         print('Расстояние между точками S=' + str(s_arr[count]))
         print('Угол между точками: ' + str(alpha_arr[count]))
         print('Угол поворота в первой точке: ' + str(beta_arr[count]))
-        print('Угол конечной ориентации: ' + str(alpha_arr[count + 1]))
+        print('Угол конечной ориентации: ' + str(alpha_last))
+        print('Угол поворота в конечной точке: ' + str(beta_last))
     else:
         x1 = int(point_arr[count].split()[0])
         y1 = int(point_arr[count].split()[1])
@@ -76,8 +99,18 @@ while count < int(len(point_arr)):
             alpha_arr += [270]
         if y0 < y1 and x0 > x1:
             alpha_arr += [270 + math.degrees(math.atan((y1 - y0)/(x0 - x1)))]
-        beta_arr += [alpha_arr[count] - beta0]
-        beta0 = alpha_arr[count]
+
+        if beta0 == alpha_arr[count]:
+            beta_arr += [alpha_arr[count]]
+        if (beta0 > alpha_arr[count]) and (alpha_arr[count] >= (beta0 - 180)):
+            beta_arr += [(beta0 - alpha_arr[count]) * (-1)]
+        if alpha_arr[count] >= (beta0 + 180):
+            beta_arr += [(beta0 + (360 - alpha_arr[count])) * (-1)]
+        if alpha_arr[count] < (beta0 - 180):
+            beta_arr += [((360 - beta0) + alpha_arr[count])]
+        if (alpha_arr[count] > beta0) and (alpha_arr[count] < (beta0 + 180)):
+            beta_arr += [alpha_arr[count] - beta0]
+
         print('____________________________________________')
         print('Пара точек № ' + str(count + 1))
         print('Координаты первой точки (' + str(x0) + ';' + str(y0) + ')')
@@ -85,9 +118,11 @@ while count < int(len(point_arr)):
         print('Расстояние между точками: ' + str(s_arr[count]))
         print('Угол между точками: ' + str(alpha_arr[count]))
         print('Угол поворота в первой точке: ' + str(beta_arr[count]))
+    beta0 = alpha_arr[count]
     x0 = x1
     y0 = y1
     count += 1
+
 
 
 # Куски для визуализации
