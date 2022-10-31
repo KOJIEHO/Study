@@ -1,10 +1,5 @@
 import numpy as np
-import pandas as pd
-import scipy.stats as st
 from math import sqrt, erf, exp
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.style.use('ggplot')
 
 
 ##########################################################################################
