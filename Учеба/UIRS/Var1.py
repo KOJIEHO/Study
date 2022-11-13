@@ -1,6 +1,9 @@
 import math
 import requests
 from PIL import Image, ImageDraw
+#
+# Первый вариант с построением кривых линий и нахождением углов, расстояния.
+#
 
 # Константы
 MaxV1 = 20
