@@ -94,7 +94,7 @@ def calculation_all_info(coordinates_arr, x0, y0, beta):
             alpha_last = float(coordinates_arr[locale_count].split()[2])
 
             # Найдем дистанцию между двумя точками.
-            distance_arr += [round((((x1 - x0) ** 2 + (y1 - y0) ** 2) ** 0.5), 3)]
+            distance_arr += [round((((x1 - x0) ** 2 + (y1 - y0) ** 2) ** 0.5), 1)]
 
             # Найдем углы alpha, beta в первой точке.
             alpha_arr += [calculation_alpha_angle(x0, x1, y0, y1)]
@@ -132,35 +132,73 @@ def calculation_all_info(coordinates_arr, x0, y0, beta):
     return distance_arr, alpha_arr, beta_arr
 
 
-def image(x0, y0, coordinates_arr, distance_arr, alpha_arr):
+def x_y_array_maker(x0, y0, coordinates_arr):
     x = [x0]
     y = [y0]
 
     locale_count = 0
     while locale_count < len(coordinates_arr):
-        x += coordinates_arr[locale_count].split(' ')[0]
-        y += coordinates_arr[locale_count].split(' ')[1]
+        x += [int(coordinates_arr[locale_count].split(' ')[0])]
+        y += [int(coordinates_arr[locale_count].split(' ')[1])]
         locale_count += 1
+    return x, y
 
-    print(x)
-    print(y)
+
+def image(x0, y0, coordinates_arr, distance_arr, alpha_arr):
+    x, y = x_y_array_maker(x0, y0, coordinates_arr)
+    max_velocity = 2
+    acceleration = 0.5
+
     plt.plot(x, y)
     locale_count = 0
     while locale_count < len(distance_arr):
+        acceleration_distance = ((max_velocity * max_velocity) / (2 * acceleration))
+        # braking_distance = acceleration_distance
         locale_distance = 0
+        velocity_each_moment_arr = []
+        velocity_acceleration_distance = []
+        all_x = []
+        all_y = []
+        locale_count1 = 0
+        locale_count2 = 0
         while locale_distance <= distance_arr[locale_count]:
-            dx = (int(y[locale_count + 1]) - int(y[locale_count])) * locale_distance / distance_arr[locale_count]
-            dy = (int(x[locale_count + 1]) - int(x[locale_count])) * locale_distance / distance_arr[locale_count]
 
+            dx = locale_distance * math.cos(math.radians(90 - alpha_arr[locale_count]))
+            dy = locale_distance * math.sin(math.radians(90 - alpha_arr[locale_count]))
+
+            all_x += [round((x[locale_count] + dx), 2)]
+            all_y += [round((y[locale_count] + dy), 2)]
+
+            print(locale_distance)
+            print(acceleration_distance)
+            print('___________________________________')
+
+            if locale_distance < acceleration_distance:
+                if x[locale_count] + dx == 0:
+                    velocity_each_moment_arr += [0]
+                    velocity_acceleration_distance += [0]
+                else:
+                    velocity_each_moment_arr += [math.sqrt(2 * acceleration * locale_distance + velocity_each_moment_arr[locale_count1 - 1] * velocity_each_moment_arr[locale_count1 - 1])]
+                    velocity_acceleration_distance += [math.sqrt(2 * acceleration * locale_distance + velocity_each_moment_arr[locale_count1 - 1] * velocity_each_moment_arr[locale_count1 - 1])]
+                    const_velocity = velocity_each_moment_arr[locale_count1 - 1]
+            else:
+                velocity_each_moment_arr += [const_velocity]
+
+            if locale_distance > (distance_arr[locale_count] - acceleration_distance):
+                locale_count2 += 1
+                velocity_each_moment_arr += [velocity_acceleration_distance[-locale_count2]]
+
+            plt.xlabel('Скорость в данный момент: ' + str(velocity_each_moment_arr[locale_count1]), fontsize=10, fontweight="bold")
             plt.plot(x[locale_count] + dx, y[locale_count] + dy, color="purple", marker='o', markersize=5)
 
             plt.draw()
-            plt.pause(0.1)
-            locale_distance += 0.01
-
+            plt.pause(0.5)
+            locale_distance += 0.25
+            locale_count1 += 1
+        # plt.pause(3)
         locale_count += 1
-    plt.pause(30)
-    # plt.close()
+    plt.pause(10)
+    plt.close()
 
 
 def main():
@@ -179,7 +217,7 @@ def main():
     distance_arr, alpha_arr, beta_arr = calculation_all_info(coordinates_arr, start_x, start_y, start_beta)
 
     # Работаем с визуализацией
-    # image(start_x, start_y, coordinates_arr, distance_arr, alpha_arr)
+    image(start_x, start_y, coordinates_arr, distance_arr, alpha_arr)
 
 
 main()
